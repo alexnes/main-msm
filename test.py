@@ -22,6 +22,7 @@ strhandler = logging.StreamHandler(sys.stdout)
 strhandler.setFormatter(form)
 logger.addHandler(strhandler)
 
+#logger.info('test')
 
 client = MongoClient(host, port)
 
