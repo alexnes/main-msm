@@ -3,8 +3,9 @@
 import sys
 import msmjson as mjson
 from msmjson import debug_message
-import msmmongo as mmongo
-from pymongo import MongoClient
+#import msmmongo as mmongo
+#from pymongo import MongoClient
+from msmmongo import MSMMongo
 from settings import MONGO_HOST as host, MONGO_PORT as port, LOG_FILENAME as logfile, LOG_FORMAT as logformat, LOG_FILESIZE as filesize, LOG_FILECOUNT as count
 import logging
 import logging.handlers
@@ -22,9 +23,9 @@ strhandler = logging.StreamHandler(sys.stdout)
 strhandler.setFormatter(form)
 logger.addHandler(strhandler)
 
-#logger.info('test')
 
-client = MongoClient(host, port)
+#client = MongoClient(host, port)
+mmongo = MSMMongo(host, port)
 
 data = mjson.get_complete_db(
 	'/home/alex/python/db/db01.json',
@@ -35,9 +36,10 @@ diff = mjson.get_complete_db(
 	source='json',
 	logger=logger)
 
-mmongo.add_new_db(client, '146200', data, logger=logger)
-mmongo.update_db(client, '146200', diff, logger=logger)
+mmongo.add_new_db('146200', data, logger=logger)
+mmongo.update_db('146200', diff, logger=logger)
 
 print 'OK'
 
 
+ 
