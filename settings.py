@@ -7,6 +7,7 @@ MONGO_DBNAMES=['140100', '142100', '142200', '142300', '142400', '142500',
 '142800', '143400', '145000', '145100', '145200', '146100', '146150', '146200', 
 '146300', '146400', '146500', '146550', '146600', '146700', '146900', '147000']
 
+LOG_TYPE='both' # FILE SCREEn BOTH NONE
 LOG_FILENAME='main-msm.log'
 LOG_FORMAT=u'[%(asctime)s] %(levelname)-8s  %(message)-65s #%(filename)s[LINE:%(lineno)d]'
 #LOG_FORMAT=u'%(message)-80s %(levelname)-8s'

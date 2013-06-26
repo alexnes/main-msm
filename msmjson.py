@@ -193,9 +193,12 @@ def extract(archive=None, path=".", logger=None):
 	# Извлекает все файлы из архива archive в каталог path
 	if archive == None: pass
 	if logger is not None: logger.info("EXTRACT: processing file: %s to %s" % (archive, path))
-	tar = tarfile.open(archive, "r:bz2")
-	tar.extractall(path)
-	tar.close()		
+	try:
+		tar = tarfile.open(archive, "r:bz2")
+		tar.extractall(path)
+		tar.close()		
+	except Exception as e:
+		if logger is not None: logger.error("EXTRACT: error: %s" % (e))
 	if logger is not None: logger.info("EXTRACT: %s done." % (archive))
 
 def dump_compressed_db(db, filename, dbname="db.json", md5=False, logger=None):
