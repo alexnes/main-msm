@@ -5,7 +5,8 @@ import msmjson as mjson
 from msmjson import extract, get_complete_db, file_checksum
 from msmmongo import MSMMongo
 from settings import MONGO_HOST as host, MONGO_PORT as port,\
-	LOG_FILENAME, LOG_FORMAT, LOG_FILESIZE, LOG_FILECOUNT, LOG_TYPE
+	LOG_FILENAME, LOG_FORMAT, LOG_FILESIZE, LOG_FILECOUNT, LOG_TYPE,\
+	ARCHIVE_INIT_PATH
 import logging
 import logging.handlers
 import os
@@ -95,7 +96,19 @@ except Exception as e:
 	if logger is not None: logger.info('ADDDB END'.center(50, '-'))
 	sys.exit(1)	
 shutil.rmtree(tmp_path)	
+archpath = ARCHIVE_INIT_PATH + data['info']['station']
+if logger is not None: logger.info('Moving archive to %s' % archpath)
+try:
+	if not os.path.exists(archpath):
+		if logger is not None: logger.info('ADDDB: Creating folder %s' % archpath)
+		os.makedirs(archpath)
+		shutil.copy(sys.argv[1], archpath)
+except Exception as e:
+	if logger is not None: logger.error('ADDDB: Error while copying file: ' % e)
+	if logger is not None: logger.info('ADDDB END'.center(50, '-'))
+	sys.exit(1)
 if logger is not None: logger.info('ADDDB END'.center(50, '-'))
+
 #data = mjson.get_complete_db(
 #	'/home/alex/python/db/db01.json',
 #	source='json',

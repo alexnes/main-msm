@@ -64,5 +64,13 @@ class MSMMongo:
 				glob.update({'station' : dbname}, write_dict, upsert=True)			
 		if logger is not None: logger.info('UPD DB END')
 
+	def get_db_info(self, dbname):
+		db = self.client[dbname]
+		return db['info'].find_one()
+
+	def get_db_list(self):
+		return self.client.database_names()
+
+
 if __name__ == '__main__':
 	pass

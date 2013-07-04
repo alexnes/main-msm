@@ -5,6 +5,8 @@ import json
 import datetime
 import tarfile
 import os
+import time
+from datetime import datetime
 from paramiko import SSHClient, AutoAddPolicy
 from scp import SCPClient
 import hashlib
@@ -104,6 +106,26 @@ def get_db(file_path):
 				Type, Value, Trace = exc_info()
 	return data
 
+def normalize_time(data):
+	# Находит в данных свойства, содержащие дату и/или время (свойства 27, 28, 36, 71, 72, 130, 131)
+	# и переводит их из строкового формата в формат time.struct_time
+	time_props = [u'27', u'28', u'71']
+	date_props = [u'36', u'130', u'131']
+	datetime_props = [u'72']
+	for gl in data:
+		for rec in data[gl]:
+			for prop in data[gl][rec]:
+				#print '====================================================================='
+				#print data[gl][rec][prop] + ' ====>',
+				if prop in time_props:
+					data[gl][rec][prop] = datetime.fromtimestamp(time.mktime(time.strptime(data[gl][rec][prop], "%H:%M")))
+				elif prop in date_props:
+					data[gl][rec][prop] = datetime.fromtimestamp(time.mktime(time.strptime(data[gl][rec][prop], "%d.%m.%y")))
+				elif prop in datetime_props:
+					data[gl][rec][prop] = datetime.fromtimestamp(time.mktime(time.strptime(data[gl][rec][prop], "%H:%M %d.%m.%y")))
+				#print data[gl][rec][prop]
+
+
 def get_complete_db(
 	path,
 	source="FILE",
@@ -129,6 +151,7 @@ def get_complete_db(
 		with open(path) as f:
 		    data = json.load(f)	
 	if logger is not None: logger.info("READ: done.")
+	normalize_time(data)
 	return data
 
 def dump_db(db, filename, logger=None):

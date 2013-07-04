@@ -1,45 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
-import msmjson as mjson
-from msmjson import debug_message
-#import msmmongo as mmongo
-#from pymongo import MongoClient
-from msmmongo import MSMMongo
-from settings import MONGO_HOST as host, MONGO_PORT as port, LOG_FILENAME as logfile, LOG_FORMAT as logformat, LOG_FILESIZE as filesize, LOG_FILECOUNT as count
-import logging
-import logging.handlers
+from globals_description import description as d
 
-#logging.basicConfig(format = logformat, level = logging.DEBUG, filename = logfile)
+props = {}
+pr_gl = {}
+for gl in d:
+	#print "%s - %s" % (gl, d[gl]['name'])
+	for pr in d[gl]['prop']:
+		#print "\t%s:\t%s" % (pr, d[gl]['prop'][pr])
+		if not props.get(pr):
+			props[pr] = d[gl]['prop'][pr]
+		if not pr_gl.get(pr):
+			pr_gl[pr] = []
+		pr_gl[pr].append(gl)
 
-#logging.basicConfig(format = logformat)
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-form = logging.Formatter(logformat)
-filehandler = logging.handlers.RotatingFileHandler(logfile, maxBytes=filesize, backupCount=count)
-filehandler.setFormatter(form)
-logger.addHandler(filehandler)
-strhandler = logging.StreamHandler(sys.stdout)
-strhandler.setFormatter(form)
-logger.addHandler(strhandler)
-
-
-#client = MongoClient(host, port)
-mmongo = MSMMongo(host, port)
-
-data = mjson.get_complete_db(
-	'/home/alex/python/db/db01.json',
-	source='json',
-	logger=logger)
-diff = mjson.get_complete_db(
-	'/home/alex/python/db/diff.json',
-	source='json',
-	logger=logger)
-
-mmongo.add_new_db('146200', data, logger=logger)
-mmongo.update_db('146200', diff, logger=logger)
-
-print 'OK'
-
-
- 
+for pr in sorted(props, key = '{:>03}'.format):
+	print "%s\t%s %s" % (pr, props[pr], sorted(pr_gl[pr]))
